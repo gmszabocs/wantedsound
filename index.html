@@ -1,0 +1,71 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#101110">
+  <meta name="description" content="A wee window into the world of Wanted Sound. Raw field recordings by Ben Scott. Put your headphones on and have a listen.">
+  <meta property="og:title" content="Wanted Sound — All those lovely, wanted sounds.">
+  <meta property="og:description" content="Raw field recordings. Strange little details. A world worth listening to.">
+  <meta property="og:type" content="website">
+  <title>Wanted Sound — Have a wee listen.</title>
+  <link rel="icon" href="assets/mark.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="styles.css">
+  <style>
+    .background-video {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      filter: grayscale(100%) brightness(65%);
+    }
+  </style>
+  <script src="playlist.js" defer></script>
+  <script src="visualizer.js" defer></script>
+  <script src="player.js" defer></script>
+</head>
+<body>
+  <a class="skip" href="#listen">Skip to the sounds</a>
+  <div class="atmosphere" aria-hidden="true">
+    <video class="background-video" src="assets/hattervideo.mp4" autoplay muted loop playsinline></video>
+    <div class="ocean-shade"></div>
+  </div>
+  <button id="fullscreen" class="fullscreen" aria-label="Enter full screen" hidden><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 3H3v5m13-5h5v5M3 16v5h5m13-5v5h-5"/></svg><span class="mono">FULL SCREEN</span></button>
+  <main>
+    <section class="listening" id="listen" aria-labelledby="site-title">
+      <div class="identity">
+        <h1 id="site-title"><img class="main-logo" src="assets/wanted-sound-logo.png" alt="Wanted Sound" width="2048" height="579"></h1>
+        <p class="identity-line mono">ALL THOSE LOVELY, WANTED SOUNDS.</p>
+      </div>
+      <div class="player-layout wrap">
+        <div class="deck">
+          <div class="deck-top mono"><span id="deck-status"><i class="signal-dot"></i> READY WHEN YOU ARE</span><span id="track-counter">01 / 04</span></div>
+          <div class="live-stage">
+            <div class="visualizer-legend mono"><span>WAVE / FORM</span><span id="visualizer-state">AWAITING A WEE LISTEN</span></div>
+            <canvas id="live-wave" role="img" aria-label="Live waveform responding to the playing recording"></canvas>
+            <span class="wave-origin mono" aria-hidden="true">+ 00</span>
+          </div>
+          <div class="now-playing"><img id="cover" src="assets/waves-of-ba-ka.jpg" alt="Waves of Baška cover artwork" width="56" height="56"><div><p id="category" class="mono muted">COASTLINE · CROATIA</p><h2 id="track-title">Waves of Baška</h2><p id="track-description">Sea, stone & a bit of wild weather.</p></div><a id="full-recording" class="recording-link" href="https://wantedsound.bandcamp.com/album/waves-of-ba-ka" target="_blank" rel="noopener noreferrer" aria-label="Full recording on Bandcamp">↗</a></div>
+          <div class="waveform-wrap"><svg id="waveform" viewBox="0 0 700 90" preserveAspectRatio="none" aria-hidden="true"><defs><clipPath id="wave-progress"><rect id="wave-progress-rect" width="0" height="90"/></clipPath></defs><g id="wave-bars" fill="#555950"></g><g id="wave-played" fill="#e8a276" clip-path="url(#wave-progress)"></g></svg><input id="seek" type="range" min="0" max="100" step="0.1" value="0" aria-label="Seek in recording" aria-valuetext="0 seconds"></div>
+          <div class="time-row mono"><span id="current-time">00:00</span><span id="duration">00:45</span></div>
+          <div class="transport"><div class="transport-main"><button class="icon-button" id="previous" aria-label="Previous recording"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 5v14M18 5 8 12l10 7z"/></svg></button><button class="main-play" id="play" aria-label="Play Waves of Baška"><svg id="play-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="m9 5 11 7-11 7z"/></svg></button><button class="icon-button" id="next" aria-label="Next recording"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M18 5v14M6 5l10 7-10 7z"/></svg></button></div><span class="listen-note">Have a wee listen.</span><div class="volume-control"><button id="mute" class="icon-button" aria-label="Mute audio" aria-pressed="false"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9v6h4l5 4V5L8 9zm12-1c3 2 3 6 0 8m3-11c5 4 5 10 0 14"/></svg></button><input id="volume" type="range" min="0" max="1" value="0.8" step="0.01" aria-label="Volume"></div></div>
+          <div class="deck-bottom mono"><span>RAW RECORDINGS / HANDPICKED EXCERPTS</span><span>HEADPHONES ON.</span></div>
+          <p class="player-message" id="player-message" role="status" aria-live="polite"></p>
+        </div>
+        <aside class="playlist" aria-labelledby="shortlist-title"><p class="eyebrow mono"><span class="signal-dot"></span> A FEW FROM THE FIELD</p><h2 id="shortlist-title">Pick a sound.<br> Stay a while.</h2><ol id="track-list" aria-label="Curated recording playlist"></ol><div class="archive"><p>Only a wee taste. There’s a whole world of<br class="desktop-break"> sound waiting over on Bandcamp.</p><a class="archive-link" href="https://wantedsound.bandcamp.com/" target="_blank" rel="noopener noreferrer">Go on, have a rummage <span aria-hidden="true">↗</span></a></div></aside>
+      </div>
+      <a class="story-jump mono" href="#story"><span aria-hidden="true">↓</span> THE STORY BEHIND THE SOUND</a>
+      <noscript><p>JavaScript is turned off. Listen below, or explore every recording on <a href="https://wantedsound.bandcamp.com/">Bandcamp</a>.</p><audio controls preload="none" src="assets/waves-of-ba-ka.mp3"></audio></noscript>
+      <audio id="audio" preload="metadata" src="assets/waves-of-ba-ka.mp3"></audio>
+    </section>
+
+    <section class="story wrap" id="story" aria-labelledby="story-title">
+      <div class="story-label"><p class="eyebrow mono"><span class="orange">02 /</span> THE STORY</p><h2 id="story-title">Nothing fancy.<br>Just listening.</h2><div class="story-stamp" aria-hidden="true"><svg viewBox="0 0 46 30"><path d="M1 15h7l4-10 6 22L25 2l5 22 5-14 4 5h6"/></svg><span class="mono">OUT THERE.<br>ALL EARS.</span></div></div>
+      <div class="story-copy"><p class="story-lead">The world’s making a right lovely racket.<br>Someone ought to record it.</p><p>Wanted Sound is Ben Scott’s collection of field recordings, based in Miskolc, Hungary. It’s a sonic record of places, objects, natural phenomena and the things people get up to. Some days, that means waves giving the Croatian coast a proper battering. Other days, it’s the hum of a bus, a creaking pine or an old turntable having a moment.</p><p>The recordings are kept raw and unprocessed. There’s character in the rough edges, and we’re rather fond of it. This little listening room offers a handful of excerpts from the archive. The full recordings live on Bandcamp, ready for a deeper listen. Stick your headphones on and give the everyday a wee bit of attention.</p><a class="bandcamp-button" href="https://wantedsound.bandcamp.com/" target="_blank" rel="noopener noreferrer">Find us on Bandcamp <span aria-hidden="true">↗</span></a></div>
+    </section>
+  </main>
+
+  <footer class="footer wrap"><a href="#" class="footer-brand" aria-label="Wanted Sound, back to top">WANTED SOUND<span class="orange">.</span></a><span class="mono footer-note">ALL THOSE LOVELY, WANTED SOUNDS.</span><div class="footer-socials"><a href="https://wantedsound.bandcamp.com/" target="_blank" rel="noopener noreferrer">Bandcamp ↗</a><a href="https://www.instagram.com/wanted_sound/" target="_blank" rel="noopener noreferrer">Instagram ↗</a></div><span class="mono copyright">© <span id="year">2026</span> WANTED SOUND</span></footer>
+</body>
+</html>
