@@ -1,53 +1,48 @@
-# Wanted Sound
+# Wanted Sound – automatikus havi válogatás
 
-Egyoldalas, angol nyelvű, statikus weboldal. Középre rendezett eredeti logó, teljes képernyős zenehallgató nézet, a valódi hangra reagáló élő hullámforma, lassan mozgó tengeres háttér, négy hangrészlet, rövid történet, Bandcamp és Instagram. A felső fejléc és banner eltávolítva.
+## Feltöltés
 
-## Feltöltés GitHub Pagesre
+1. A csomagban lévő `playlist.js` és `player.js` fájllal írd felül a weboldal azonos nevű fájljait.
+2. Az `assets` mappa tartalmát másold a weboldal meglévő `assets` mappájába. A mappák tartalmát egyesítsd.
+3. Töltsd fel a változásokat a GitHub repositoryba. A meglévő GitHub Pages oldal ezután a havi válogatással működik.
 
-A csomag tartalma a teljes működő weboldal. Nincs csomagtelepítés, fordítás, adatbázis, szerver vagy titkos API-kulcs.
+A teljes csomag a két JavaScript-fájlt, a húsz MP3-hangrészletet és a húsz borítót tartalmazza. A jelenlegi index ugyanazokat a fájlneveket tölti be. Az első felvétel címe, borítója, időtartama és hangforrása is automatikusan a havi választáshoz igazodik.
 
-1. Hozz létre egy GitHub repositoryt.
-2. A csomag **tartalmát** töltsd a repository gyökerébe: az `index.html` közvetlenül ott legyen. Az `assets/` mappát és a `.nojekyll` fájlt is tartsd meg.
-3. A repository **Settings → Pages** oldalán a forrás legyen **Deploy from a branch**, majd **main / (root)**. Mentsd el.
-4. Saját domainhez ugyanitt add meg a domaint a **Custom domain** mezőben. A DNS-beállításokat a domainszolgáltatónál kell megadni a GitHub útmutatója szerint. A domain még nincs bekötve ebben az átadásban.
-5. Amikor a tanúsítvány elkészült, kapcsold be az **Enforce HTTPS** lehetőséget.
+## Havi működés
 
-Hivatalos útmutatók:
-- https://docs.github.com/en/pages/getting-started-with-github-pages/configuring-a-publishing-source-for-your-github-pages-site
-- https://docs.github.com/en/pages/configuring-a-custom-domain-for-your-github-pages-site/managing-a-custom-domain-for-your-github-pages-site
+- A meglévő négy és a további tizenhat hang összesen húsz felvételből álló készletet alkot.
+- Minden hónapban négy hang jelenik meg, minden látogatónál ugyanabban a sorrendben.
+- A hónapot a böngésző a Europe/Budapest időzónában számolja. A téli és nyári időszámítást automatikusan kezeli.
+- A véletlenszerű sorrend az időszakból számított közös kezdőértéket használ. Ugyanabban a hónapban újratöltéskor is ugyanaz a lista jelenik meg.
+- Egy öthónapos cikluson belül mind a húsz felvétel sorra kerül. Két szomszédos hónap válogatásában nincs közös hang.
+- A megnyitott oldalon a hónap ellenőrzése percenként, valamint a lap visszanyitásakor történik. A hónapforduló legfeljebb egy perc késéssel jelenik meg az aktív lapon.
+- Ha éppen szól egy felvétel, az befejeződik, majd az új lista első hangja indul. Ha a látogató szüneteltet, a lista már az új hónapra vált.
 
-A relatív fájlhivatkozások miatt saját domainen és repository alatti GitHub Pages címen is működik. A ZIP-csomag weboldalfájljai már a csomag gyökerében vannak; feltöltéskor nem kell külön `dist` mappát létrehozni.
+## Hanganyag
 
-## Helyi megtekintés
+A tizenhat új hangot véletlenszerűen választottam a Wanted Sound nyilvános Bandcamp-kiadványaiból, és mindegyikből egy véletlenszerűen kiválasztott, elérhető felvétel elejét használtam. A hangrészletek legfeljebb 45 másodperces, 128 kbps MP3-fájlok. Az eredeti négy felvétel hangfájljait és metaadatait a meglévő változatból vettem át. A teljes felvételekhez minden sor mellett külön Bandcamp-link tartozik.
 
-A `index.html` közvetlenül megnyitható böngészőben. Fejlesztéskor használható egyszerű statikus kiszolgáló is:
+A hangfájlok és borítók a csomagban vannak, és a saját GitHub Pages oldalról töltődnek be. A hullámformák a tényleges hangrészletekből készültek. A megjelenítési erősítés csak az élő hullám rajzolatát változtatja.
 
-```sh
-python3 -m http.server 8000
-```
-
-## Szerkesztés
-
-- `index.html`: a márkaszöveg, a történet, a Bandcamp- és Instagram-linkek.
-- `styles.css`: megjelenés és mobilos elrendezés.
-- `playlist.js`: a lejátszási lista, címek, hangfájlok, borítók, hullámformák, Bandcamp céloldalak.
-- `player.js`: lejátszás/szünet, előző/következő, hangerő, némítás, idővonal, automatikus továbblépés és teljes képernyős gomb.
-- `visualizer.js`: Web Audio API és Canvas alapú, valódi hangmintákból rajzolt élő hullámforma. Nem kér mikrofonengedélyt. A felvételenként kalibrált megjelenítési erősítés csak a rajzot változtatja.
-- `assets/`: helyben tárolt MP3-részletek, borítók, háttérkép és SVG-jel.
-
-## A lejátszási lista
-
-| Felvétel | Részlet hossza | Eredeti megjelenés |
+| Felvétel | Állapot | Teljes kiadvány |
 | --- | --- | --- |
-| Waves of Baška | 45 mp | https://wantedsound.bandcamp.com/album/waves-of-ba-ka |
-| Wind in the Pine | 45 mp | https://wantedsound.bandcamp.com/album/wind-in-the-pine |
-| Double Decker Bus Ride | 45 mp | https://wantedsound.bandcamp.com/album/double-decker-bus-ride |
-| Old 90’s Turntable | 22 mp | https://wantedsound.bandcamp.com/album/old-90s-turntable |
-
-A részletek az adott kiadvány első felvételének elejéből származnak, helyben tárolt 128 kbps MP3-ként. Nincs lejáró streaming-hivatkozás vagy külső lejátszófüggőség. A hullámformák a tényleges hangrészletekből készültek. A teljes, jó minőségű eredetikhez minden felvétel mellett Bandcamp-link tartozik.
-
-Hangok, borítók és a tengerparti háttérkép forrása: Wanted Sound / Ben Scott, a megadott Bandcamp-kiadványok. A saját domain pontos neve nem lett megadva, ezért nincs előre kitöltött CNAME vagy kanonikus URL. A rövid angol bemutatkozás a nyilvános Bandcamp-adatok alapján szerkesztett márkaszöveg; évszámot és kitalált alapítástörténetet nem tartalmaz.
-
-## Használat
-
-Az oldal betöltéskor csendben marad. A logó alatt közvetlenül látható a lejátszó és a hanglista. A lejátszógomb azonnal indítja a kiválasztott részletet. A lista bármelyik felvétele közvetlenül elindítható; egyszerre egy hang szól. Az utolsó részlet után a lista megáll. A szóköz lejátszást/szünetet kapcsol, ha nincs másik vezérlő fókuszban. A csúszkák billentyűzetről is használhatók. A teljes képernyős gomb az ezt támogató böngészőkben jelenik meg. A háttér CSS-mozgása, valamint az élő hullámforma tiszteletben tartja a csökkentett mozgás rendszerbeállítását; ilyenkor állókép marad. Szünetben és háttérbe tett lapon a rajzolási ciklus leáll. JavaScript nélkül az első hangrészlet natív lejátszóval és a Bandcamp-linkkel érhető el.
+| Waves of Baška | Meglévő | https://wantedsound.bandcamp.com/album/waves-of-ba-ka |
+| Wind in the Pine | Meglévő | https://wantedsound.bandcamp.com/album/wind-in-the-pine |
+| Double Decker Bus Ride | Meglévő | https://wantedsound.bandcamp.com/album/double-decker-bus-ride |
+| Old 90’s Turntable | Meglévő | https://wantedsound.bandcamp.com/album/old-90s-turntable |
+| A Murder of Crows in Suburbia | Új | https://wantedsound.bandcamp.com/album/a-murder-of-crows-in-suburbia |
+| Sewer Water | Új | https://wantedsound.bandcamp.com/album/sewer-water |
+| Electrosmog | Új | https://wantedsound.bandcamp.com/album/electrosmog |
+| Wheel Change | Új | https://wantedsound.bandcamp.com/album/wheel-change |
+| Laundry Day | Új | https://wantedsound.bandcamp.com/album/laundry-day |
+| Wind | Új | https://wantedsound.bandcamp.com/album/wind |
+| SUP Ride on Lake Balaton | Új | https://wantedsound.bandcamp.com/album/sup-ride-on-lake-balaton |
+| Solar Panel Electrosmog | Új | https://wantedsound.bandcamp.com/album/solar-panel-electrosmog |
+| Baška Summer Seaside | Új | https://wantedsound.bandcamp.com/album/ba-ka-summer-seaside |
+| Stomach Noises | Új | https://wantedsound.bandcamp.com/album/stomach-noises |
+| A Tale of Two Trees | Új | https://wantedsound.bandcamp.com/album/a-tale-of-two-trees |
+| Whitely Bay Beach | Új | https://wantedsound.bandcamp.com/album/whitely-bay-beach |
+| Visiting Miskolc Train Station | Új | https://wantedsound.bandcamp.com/album/visiting-miskolc-train-station |
+| Diesel Trains Speeding Past | Új | https://wantedsound.bandcamp.com/album/diesel-trains-speeding-past |
+| Fireworks at New Year's Eve | Új | https://wantedsound.bandcamp.com/album/fireworks-at-new-years-eve |
+| Taking a Shower | Új | https://wantedsound.bandcamp.com/album/taking-a-shower |

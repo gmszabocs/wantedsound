@@ -1,6 +1,7 @@
 'use strict';
 (() => {
-  const tracks = window.WANTED_PLAYLIST;
+  let tracks = window.WANTED_PLAYLIST;
+  let pendingPlaylist = null;
   if (!Array.isArray(tracks) || !tracks.length) return;
   const $ = id => document.getElementById(id);
   const audio = $('audio');
@@ -11,7 +12,11 @@
   audio.volume = .8;
   const time = n => { const v = Math.floor(Number.isFinite(n) ? n : 0); return `${String(Math.floor(v / 60)).padStart(2,'0')}:${String(v % 60).padStart(2,'0')}`; };
   const message = text => { $('player-message').textContent = text; };
-  const rows = tracks.map((track, i) => {
+  let rows = buildRows();
+
+  function buildRows() {
+    $('track-list').replaceChildren();
+    return tracks.map((track, i) => {
     const li = document.createElement('li'); li.className = 'track-row';
     const btn = document.createElement('button'); btn.className = 'track-button';
     const number = document.createElement('span'); number.className = 'track-number'; number.setAttribute('aria-hidden','true');
@@ -21,8 +26,9 @@
     const duration = document.createElement('span'); duration.className = 'track-time'; duration.textContent = time(track.duration);
     label.append(title,kind); btn.append(number,label,duration); btn.addEventListener('click',()=>select(i,true));
     const link = document.createElement('a'); link.className='track-out'; link.href=track.url; link.target='_blank'; link.rel='noopener noreferrer'; link.textContent='↗'; link.setAttribute('aria-label',`${track.title} on Bandcamp (opens a new tab)`);
-    li.append(btn,link); $('track-list').append(li); return {li,btn,number};
-  });
+      li.append(btn,link); $('track-list').append(li); return {li,btn,number};
+    });
+  }
   function paintState() {
     const playing = !audio.paused && !audio.ended;
     document.body.classList.toggle('playing',playing);
@@ -55,7 +61,33 @@
     try { const graph = window.WantedVisualizer?.connect(); await Promise.all([audio.play(), graph]); if(currentRequest===request) paintState(); }
     catch(error){if(currentRequest!==request || error.name==='AbortError') return; message(error.name==='NotAllowedError' ? 'One more tap on play and we’re off.' : 'That recording couldn’t load. Try again, or follow “Full recording” to Bandcamp.');paintState();}
   }
-  function toggle(){ if(audio.paused || audio.ended) start(); else {++request;audio.pause();} }
+  function toggle() {
+    if (audio.paused || audio.ended) {
+      if (pendingPlaylist) applyMonthlyPlaylist(pendingPlaylist);
+      start();
+    } else {
+      ++request;
+      audio.pause();
+      if (pendingPlaylist) applyMonthlyPlaylist(pendingPlaylist);
+    }
+  }
+
+  function applyMonthlyPlaylist(nextTracks) {
+    pendingPlaylist = null;
+    tracks = nextTracks;
+    rows = buildRows();
+    select(0, false);
+  }
+
+  window.addEventListener('wanted:playlistchange', event => {
+    const nextTracks = event.detail.tracks;
+    if (!Array.isArray(nextTracks) || !nextTracks.length) return;
+    if (audio.paused || audio.ended) {
+      applyMonthlyPlaylist(nextTracks);
+    } else {
+      pendingPlaylist = nextTracks;
+    }
+  });
   function select(next,autoplay){
     if(next===index && autoplay){toggle();return;}
     ++request; audio.pause(); index=(next+tracks.length)%tracks.length;
@@ -79,10 +111,21 @@
   $('mute').addEventListener('click',()=>{if(audio.muted || audio.volume===0){audio.muted=false;if(!audio.volume)audio.volume=lastVolume;}else audio.muted=true;updateVolume();});
   audio.addEventListener('play',paintState);audio.addEventListener('pause',paintState);
   audio.addEventListener('timeupdate',paintProgress);audio.addEventListener('loadedmetadata',paintProgress);
-  audio.addEventListener('ended',()=>{if(index<tracks.length-1)select(index+1,true);else {paintState();message('That’s the shortlist. There’s plenty more waiting on Bandcamp.');}});
+  audio.addEventListener('ended', () => {
+    if (pendingPlaylist) {
+      applyMonthlyPlaylist(pendingPlaylist);
+      start();
+    } else if (index < tracks.length - 1) {
+      select(index + 1, true);
+    } else {
+      paintState();
+      message('That’s the shortlist. There’s plenty more waiting on Bandcamp.');
+    }
+  });
   audio.addEventListener('error',()=>{paintState();message('That recording couldn’t load. Try again, or follow “Full recording” to Bandcamp.');});
   document.addEventListener('keydown',event=>{const tag=event.target.tagName;if(event.code==='Space' && !['INPUT','BUTTON','TEXTAREA','A','SELECT'].includes(tag) && !event.target.isContentEditable){event.preventDefault();toggle();}});
-  $('year').textContent=new Date().getFullYear(); drawWaveform();paintState();paintProgress();
+  $('year').textContent = new Date().getFullYear();
+  select(0, false);
   const fullscreen = $('fullscreen');
   if (document.fullscreenEnabled && document.documentElement.requestFullscreen) {
     fullscreen.hidden = false;
